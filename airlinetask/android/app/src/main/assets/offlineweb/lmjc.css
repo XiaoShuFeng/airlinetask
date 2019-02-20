@@ -1,0 +1,497 @@
+html{
+	-webkit-text-size-adjust: 100% !important;
+	font-size:16px;
+}
+body{
+	text-align:center;
+	margin:auto;
+}
+
+/* 隐藏仅有一页的工卡完工签署table */
+tr[name="insertTr1"]{
+	display:none;
+}
+
+.noscroll{
+	overflow:hidden;
+}
+
+#overlay{
+	position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+	height: 100%;
+    background: #000;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+	z-index:999999999999;
+}
+
+#overlay svg{
+	width:140px;
+	width:8.75rem;
+	height:140px;
+	height:8.75rem;
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -70px 0 0 -70px;
+    margin: -4.375rem 0 0 -4.375rem;
+}
+
+span[type=inputunit] *{
+	display:none;
+}
+
+.modifyvalue{
+	font-family:Times New Roman;
+	font-size:10.5pt;
+	font-size:0.875rem;
+	text-decoration:line-through;
+}
+
+span[type=inputunit] input[type=checkbox],td[name=sign] input[type=checkbox]{
+	display: inline-block;
+    height: 16px;
+    height:1rem;
+    width: 16px;
+    width:1rem;
+    overflow: hidden;
+    margin-top: 2px;
+    margin-top:0.125rem;
+    vertical-align: middle;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    border: 2px solid #f0506e;
+    transition: .2s ease-in-out;
+    transition-property: background-color,border;
+    z-index:100;
+}
+
+span[type=inputunit] input[type=checkbox]:checked,td[name=sign] input[type=checkbox]:checked{
+	background-image: url('data:image/svg+xml;charset=UTF-8,<svg width="14" height="11" viewBox="0 0 14 11" xmlns="http://www.w3.org/2000/svg"><polygon fill="#f0506e" points="12 1 5 7.5 2 5 1 5.5 5 10 13 1.5" /></svg>');
+}
+
+span[type=inputunit] input[type=text] {
+	display: inline-block;
+	padding:0;
+	margin:0;
+	text-align:center;
+	border:0;
+	z-index:100;
+}
+
+span[type=inputunit] select {
+	display: inline-block;
+	background:#fafdfe;
+	margin-top: -2px;
+	top:-0.125rem;
+	height:20px;
+	height:1.25rem;
+	line-height:28px;
+	line-height:1.75rem;
+	border:1px solid #f0506e;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+	border-radius:2px;
+	z-index:100;
+}
+
+span[type=inputunit] option {
+	display: inline-block;
+}
+
+td[name=sign]{
+	position:relative;
+}
+
+table[name^=pos_location_]{
+	margin-right:64px;
+	margin-right:4rem;
+}
+
+td[name=sign] p{
+	position:absolute;
+}
+
+td[name=sign] input[type=button],td[name=sign] img{
+	position:relative;
+	top:-18px;
+	top:-1.125rem;
+}
+
+td[name=sign] div[name=signsvg]{
+	position:relative;
+	top:-36px;
+	top:-2.25rem;
+	left:16px;
+	left:1rem;
+	width:40px;
+	width:2.5rem;
+	height:40px;
+	height:2.5rem;
+}
+
+td[name=accomplishedSign] div[name=signsvg]{
+	position:relative;
+	left:40px;
+	left:2.5rem;
+	width:40px;
+	width:2.5rem;
+	height:40px;
+	height:2.5rem;
+}
+
+td[name=sign] input[type=checkbox]{
+	position:relative;
+	top:-36px;
+	top:-2.25rem;
+	left:78px;
+	left:4.875rem;
+}
+
+td[name=sign] input[name=modify],td[name=sign] input[name=delete]{
+	position:relative;
+	top:-44px;
+	top:-2.75rem;
+	left:78px;
+	left:4.875rem;
+	margin-top:4px;
+	margin-top:0.25rem;
+}
+
+td[name=sign] p{
+	color:#f0506e;
+	display:inline-block;
+	width:70px;
+	width:4.375rem;
+	text-align:center;
+	top:5px;
+}
+
+td[name=sign] img, td[name=accomplishedSign] img,td[name=accomplishedDate] img{
+	width:19.2px;
+	width:1.2rem;
+	height:16px;
+	height:1rem;
+	z-index:100;
+}
+
+td[name=sign] img{
+	left:24px;
+	left:1.5rem;
+}
+
+td[name=sign] input[type=button]{
+	width:70px;
+	width:4.375rem;
+	height:16px;
+	height:1rem;
+	font-size:8pt;
+	font-size:0.5rem;
+	border:1px solid #f0506e;
+	background:#f0506e;
+	color:#fff;
+	z-index:200;
+}
+
+td[name=accomplishedSign],td[name=accomplishedDate]{
+	text-align:center;
+}
+
+td[name=accomplishedSign] input[type=button],td[name=accomplishedDate] input[type=button]{
+	width:70px;
+	width:4.375rem;
+	border:1px solid #f0506e;
+	background:#f0506e;
+	color:#fff;
+	z-index:200;
+}
+
+td[name=accomplishedDate] input[type=button],td[name=accomplishedDate] img{
+	position:relative;
+	top:-7px;
+	top:-0.4375rem;
+}
+
+@font-face{
+	font-family: 'Times New Roman';
+	src: url('TIMES.TTF');
+}
+
+@font-face{
+	font-family: '宋体';
+	src: url('simsun.ttf');
+}
+
+
+#ruler {
+    position:absolute;
+    visibility: hidden;
+    white-space: nowrap;
+    z-index: -100;
+}
+
+.dialog-box{
+	font: normal 26px '\5FAE\8F6F\96C5\9ED1';
+	height: auto;
+	position: fixed;
+	top: 30%;
+	left: 50%;
+	z-index: 999999999999;
+	display: none;
+}
+
+.show{
+	display: block;
+}
+.normal{
+	background: #fff;
+}
+.correct{
+	border-top: 4px solid #66be8c;
+	background: #f8fffb;
+}
+.error{
+	border-top: 4px solid #f5694b;
+	background: #fff8f7;
+}
+
+.dialog-box-container{
+	position: relative;
+	margin: 0 auto;
+	border-radius: 5px;
+	box-shadow: 0 0 10px #bbb;
+}
+.dialog-box-title{
+	height: 36px;
+	line-height: 36px;
+	padding: 0 15px;
+}
+.dialog-box-title h3{
+	font-size: 20px;
+	font-weight: bold;
+	margin: 0;
+	float: left;
+}
+.dialog-box-close{
+	font-size: 24px;
+	margin-left: 20px;
+	font-weight: normal;
+	float: right;
+	cursor: pointer;
+	display: inline-block;
+	float: right;
+}
+.dialog-box-close:hover{
+	color: #f5694b;
+}
+.dialog-box-content{
+	font-family: 'Microsoft YaHei';
+	padding: 20px;
+	line-height: 24px;
+	margin: 0;
+}
+.dialog-btn{
+	height:60px;
+	padding: 0 40px 40px;
+	text-align: center;
+}
+.dialog-btn span{
+	width: 90px;
+	height: 60px; 
+	line-height: 60px;
+	text-align: center;
+	display: inline-block;
+	border-radius: 3px;
+	margin: -40px 30px;
+	cursor: pointer;
+	font-size: 18px;
+}
+.dialog-btn-cancel{
+	color: #ffffff;
+	background: #ff5353;
+}
+.dialog-btn-cancel:hover{
+	background: #d6d6d6;
+}
+.dialog-btn-confirm{
+	color: #fff;
+	background: #66be8c;
+}
+.dialog-btn-confirm:hover{
+	background: #58B781;
+}
+
+#dialog-box-mask{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right:0;
+	width: 100%;
+	height: 100%;
+	z-index: 999999998;
+	opacity: .3;
+	filter: alpha(opacity=30);
+	background: #000;
+	display: none;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+#dialog-box-iframe body{
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+/* effect */
+
+/* effect-fade */
+.effect-fade .dialog-box-container{
+	-webkit-transform: scale(0.6);
+	-ms-transform: scale(0.6);
+	transform: scale(0.6);
+	opacity: 0;
+	transition: all .3s;
+}
+.show.effect-fade .dialog-box-container{
+	-webkit-transform: scale(1);
+	-ms-transform: scale(1);
+	transform: scale(1);
+	opacity: 1;
+}
+
+/* effect-newspaper */
+.effect-newspaper .dialog-box-container{
+	-webkit-transform: scale(0) rotate(720deg);
+	-ms-transform: scale(0) rotate(720deg);
+	transform: scale(0) rotate(720deg);
+	opacity: 0;
+	-webkit-transition: all 0.3s;
+	transition: all 0.3s;
+}
+.show.effect-newspaper .dialog-box-container{
+	-webkit-transform: scale(1) rotate(0deg);
+	-ms-transform: scale(1) rotate(0deg);
+	transform: scale(1) rotate(0deg);
+	opacity: 1;
+}
+
+/* effect-fall */
+.effect-fall{
+	-webkit-perspective: 1300px;
+	perspective: 1300px;
+}
+.effect-fall .dialog-box-container{
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-transform: translateZ(600px) rotateX(20deg);
+	-ms-transform: translateZ(600px) rotateX(20deg); 
+	transform: translateZ(600px) rotateX(20deg); 
+	opacity: 0;
+}
+.show.effect-fall .dialog-box-container{
+	-webkit-transition: all 0.3s ease-in;
+	transition: all 0.3s ease-in;
+	-webkit-transform: translateZ(0px) rotateX(0deg);
+	-ms-transform: translateZ(0px) rotateX(0deg);
+	transform: translateZ(0px) rotateX(0deg); 
+	opacity: 1;
+}
+
+/* effect-scaled */
+.effect-scaled .dialog-box-container{
+	-webkit-transform: scale(2);
+	-ms-transform: scale(2);
+	transform: scale(2);
+	opacity: 0;
+	-webkit-transition: all 0.3s;
+	transition: all 0.3s;
+}
+.show.effect-scaled .dialog-box-container{
+	-webkit-transform: scale(1);
+	-ms-transform: scale(1);
+	transform: scale(1);
+	opacity: 1;
+}
+
+/* effect-flip-horizontal */
+.effect-flip-horizontal{
+	-webkit-perspective: 1300px;
+	-moz-perspective: 1300px;
+	perspective: 1300px;
+}
+.effect-flip-horizontal .dialog-box-container{
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-transform: rotateY(-70deg);
+	-ms-transform: rotateY(-70deg);
+	transform: rotateY(-70deg);
+	-webkit-transition: all 0.3s;
+	transition: all 0.3s;
+	opacity: 0;
+}
+.show.effect-flip-horizontal .dialog-box-container{
+	-webkit-transform: rotateY(0deg);
+	-ms-transform: rotateY(0deg);
+	transform: rotateY(0deg);
+	opacity: 1;
+}
+
+/* effect-flip-vertical */
+.effect-flip-vertical{
+	-webkit-perspective: 1300px;
+	-moz-perspective: 1300px;
+	perspective: 1300px;
+}
+.effect-flip-vertical .dialog-box-container{
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-transform: rotateX(-70deg);
+	-ms-transform: rotateX(-70deg);
+	transform: rotateX(-70deg);
+	-webkit-transition: all 0.3s;
+	transition: all 0.3s;
+	opacity: 0;
+}
+.show.effect-flip-vertical .dialog-box-container{
+	-webkit-transform: rotateX(0deg);
+	-ms-transform: rotateX(0deg);
+	transform: rotateX(0deg);
+	opacity: 1;
+}
+
+/* effect-sign */
+.effect-sign{
+	-webkit-perspective: 1300px;
+	perspective: 1300px;
+}
+.effect-sign .dialog-box-container{
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-transform: rotateX(-60deg);
+	-ms-transform: rotateX(-60deg);
+	transform: rotateX(-60deg);
+	-webkit-transform-origin: 50% 0;
+	transform-origin: 50% 0;
+	opacity: 0;
+	-webkit-transition: all 0.3s;
+	transition: all 0.3s;
+}
+.show.effect-sign .dialog-box-container{
+	-webkit-transform: rotateX(0deg);
+	-ms-transform: rotateX(0deg);
+	transform: rotateX(0deg);
+	opacity: 1;
+}
+
+/*@font-face{
+	font-family:ו;
+	src:url(../LMJcAction/GetJavaScript.do?filename=simsun.ttc)format('truetype');
+	
+}*/

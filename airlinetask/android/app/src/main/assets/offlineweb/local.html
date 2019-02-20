@@ -1,0 +1,293 @@
+<html xmlns:v="urn:schemas-Microsoft-com:vml" xmlns:o="urn:schemas-Microsoft-com:office:office" xmlns:w="urn:schemas-Microsoft-com:office:Word" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" xmlns="http://www.w3.org/TR/REC-html40">
+ <head>
+ <meta charset="utf-8">
+  <script type="text/javascript" src="jquery-1.12.4.min.js"></script>
+<!--   <script>var JcId = '3306237';var Esgin = '1';</script>
+  <script type="text/javascript" src="lmjc.js"></script> -->
+  
+ <script>
+
+
+// 全局变量
+let jcinfo = {}
+let possigndata = {}
+let complishData = {}
+let canComplish = {}
+let modifyComplish = {}
+let inputArr = []
+let inputs = {}
+let inputschange = {}
+let imageArr = []
+let images = {}
+let page = ""
+let inited = false;
+let clickEnable = true;
+let hasPage,hasJcInfo,hasSign,hasSignVerify,hasSignModify,hasComplish,hasComplishVerify,hasComplishModify,hasImage,hasInputs = false
+function getRequestParameters(){
+	let arr = (location.search || "").replace(/^\?/,'').split("&");
+	let params = {};
+	for(let i=0; i<arr.length; i++){
+		let data = arr[i].split("=");
+		if(data.length == 2){
+			params[data[0]] = data[1];
+		}
+	}
+	return params;
+}
+$(document).ready(function(){
+	let params = getRequestParameters()
+	if(params.jcid != undefined && params.esign!= undefined ){
+		// 拉取整个html
+		let msg = 'offlinejcpage:'+params.userid+':'+params.jcid
+		setTimeout(function(){
+			// 拉取jcinfo
+			sendMessage('offlinejcinfo:'+params.userid+':'+params.jcid)
+
+
+			// 拉取完工
+			sendMessage('offlinecomplish:'+params.userid+':'+params.jcid)
+			// 拉取能否完工
+			sendMessage('offlinecancomplish:'+params.userid+':'+params.jcid)
+			// 拉取能否修改完工
+			sendMessage('offlinecomplishmodify:'+params.userid+':'+params.jcid)
+
+			// 拉取html
+			sendMessage(msg)
+		},200)
+
+		
+		// 拉取complish
+		// sendMessage('offlinecomplish:')
+		if(params.online){
+			$.ajax({
+				url : 'http://wechattest.ameco.com.cn:8090/xmis/LMJcAction/GetJcHtmlPage.do?jcid='+params.jcid+'&esign='+params.esign,
+				type : 'get',
+				success: function(data){
+					//data = data.replace("","");
+					data = data.replace("..\/LMJcAction\/GetJavaScript.do?filename=","");
+					data = data.replace("..\/LMJcAction\/GetJavaScript.do?filename=","");
+					data = data.replace("..\/LMJcAction\/GetJavaScript.do?filename=","");
+					data = data.replace("..\/LMJcAction\/GetJcImage.do?n=","");
+					// $("body").append(data);
+					// $("body").append(``)
+					// sendMessage('log:'+'good'+data)
+					console.log(data)
+					$("#container").html(data.toString());
+					// document.getElementById("container").innerHtml = data;
+					// downloadJSAtOnload();
+				},
+				error: function(err){
+					//alert('error')
+				}
+			})
+		}
+		
+	}else {
+		alert("参数不全 jcid esign userid")
+	}
+	
+});
+window.document.addEventListener('message',function(msgObj){
+	let params = getRequestParameters()
+	if(typeof(msgObj.data) === 'string'){
+		let msg = msgObj.data.split(":")
+		if(msg[0] === 'base64'){
+			clickEnable = true;
+			// location.reload()
+			if(msg[1] === 'jcid'){
+				var now = new Date();
+				$('td[name="accomplishedSign"]').signbutton('signSuccess',msg[2]);						
+				$('td[name="accomplishedDate"]').find('font')[0].innerText = now.getFullYear() + '-' + now.getMonth() + '-' + now.getDate();
+				$('td[name="accomplishedDate"]').find('font').css('display', 'inline-block');						
+			}else{
+				var locationArr = msg[3].split(',');
+				for (var i=0;i<locationArr.length;i++)
+				{
+					possigndata[locationArr[i]].base64 = msg[2]
+					$('td[name=sign][location='+ locationArr[i] +']').signbutton('signSuccess',msg[2]);
+				}
+			}									
+		}
+		
+		//删除签署
+		if(msg[0] === 'deleteesign'){
+			clickEnable = true;
+			// location.reload()
+			if(msg[1] === 'jcid'){
+				$('td[name="accomplishedSign"]').signbutton('signDelete');	
+				$('td[name="accomplishedDate"]').find('font')[0].innerText = '';
+				$('td[name="accomplishedDate"]').find('font').css('display', 'inline-block');
+			}else{
+				possigndata[msg[2]].base64 = null;
+				$('td[name=sign][location='+ msg[2] +']').signbutton('signDelete');
+			}	
+												
+		}
+		
+		//电签错误或取消
+		if(msg[0] === 'error'){
+			clickEnable = true;
+			if(msg[1] === 'jcid'){
+				$('td[name="accomplishedSign"]').signbutton('signDisplay',true);
+				$('td[name="accomplishedDate"]').find('font').css('display', 'inline-block');
+			}else{
+				var locationArr = msg[1].split(',');
+				for (var i=0;i<locationArr.length;i++)
+				{
+					$('td[name=sign][location='+ locationArr[i] +']').signbutton('signDisplay',true);
+				}
+			}										
+		}
+
+
+		if(msg[0] === 'jcpage') {
+			// 整个html
+			let data = msgObj.data.substring(msg[0].length+1)
+			data = data.replace("..\/LMJcAction\/GetJavaScript.do?filename=","");
+			data = data.replace("..\/LMJcAction\/GetJavaScript.do?filename=","");
+			data = data.replace("..\/LMJcAction\/GetJavaScript.do?filename=","");
+			data = data.replace("..\/LMJcAction\/GetJcImage.do?n=","");
+			// $("body").append(data);
+			// $("body").append(``)
+			// alert(12)
+			page = data
+			hasPage = true
+			// sendMessage('log:'+'bad'+page)
+			// alert('jcpage do')
+			let reg = /pos_location_\d+/g;
+			let arr = data.match(reg);
+			for (let j =0; j < arr.length; j++) {
+	            let location = arr[j].substring(13)
+	            arr[j] = 'jcpossign:'+params.jcid+':'+location
+
+	        }
+	        let reg2 = /\d+.png/g;
+	        let arr2 = data.match(reg2) || [];
+	        imageArr = arr2;
+
+
+	        let reg3 = /fieldlocation_\d+/g
+	        let arr3 = data.match(reg3) || [];
+	        for(let i=0;i<arr3.length;i++){
+	        	inputArr.push(arr3[i].substring(14))
+	        }
+
+	        sendMessage('offlinepossign:'+params.userid+':'+arr.join(","));
+	        try{
+	        	sendMessage('offlineimages:'+params.userid+':'+arr2.join(',')+':'+params.jcid);
+				sendMessage('offlineinputs:'+params.userid+':'+inputArr.join(',')+':'+params.jcid);
+				sendMessage('offlineinputschange:'+params.userid+':'+inputArr.join(',')+':'+params.jcid);
+	        }catch(e){
+	        	alert(e.message)
+	        }
+	        
+
+		}else if(msg[0] === 'offlinejcinforesponse') {
+			// alert('jcinfo do')
+			hasJcInfo = true
+			jcinfo = msgObj.data.substring(msg[0].length+1)
+			jcinfo = JSON.parse(jcinfo)
+			
+		}else if(msg[0] === 'offlinepossignresponse') {
+			// alert('sign do')
+			hasSign = true
+			hasSignVerify = true
+			hasSignModify = true
+			let res = msgObj.data.substring(msg[0].length+1)
+			possigndata = JSON.parse(res)
+			
+		}else if(msg[0] === 'offlinecomplishresponse') {
+			// alert('complish do')
+			hasComplish = true
+			let res = msgObj.data.substring(msg[0].length+1)
+			complishData = JSON.parse(res)
+			// alert(complishData.base64)
+		
+		}else if(msg[0] === 'offlinecancomplishresponse') {
+			// alert('complish verfify do')
+			hasComplishVerify = true
+			let res = msgObj.data.substring(msg[0].length+1)
+			canComplish = JSON.parse(res)
+
+
+		}else if(msg[0] === 'offlinecomplishmodifyresponse') {
+			// alert('complish modify do')
+			hasComplishModify = true
+			let res = msgObj.data.substring(msg[0].length+1)
+			modifyComplish = JSON.parse(res)
+			
+		}else if(msg[0] === 'offlineimagesresponse'){
+			hasImage = true;
+			let res = msgObj.data.substring(msg[0].length+1);
+			// alert(res)
+			// alert(JSON.stringify(imageArr))
+			images = JSON.parse(res);
+			// alert(images)
+			for(let i=0;i<imageArr.length;i++){
+				page = page.replace('../LMJcAction/GetJcImage.do?n='+imageArr[i],images[imageArr[i]])
+				// alert('../LMJcAction/GetJcImage.do?n='+imageArr[i])
+				// alert(images[imageArr[i]])
+
+			}
+			// sendMessage('log:'+page)
+		}else if(msg[0] === 'offlineinputsresponse') {
+			hasInputs = true;
+			let res = msgObj.data.substring(msg[0].length+1);
+			// alert(JSON.stringify(imageArr))
+			inputs = JSON.parse(res);
+		}else if(msg[0] === 'offlineinputschangeresponse') {
+			// hasInputs = true;
+			let res = msgObj.data.substring(msg[0].length+1);
+			// alert(JSON.stringify(imageArr))
+			inputschange = JSON.parse(res);
+		}
+
+		if(isInited() && !inited){
+			try{
+				inited = true;
+				// alert('页面加载完成')
+				// sendMessage('log:'+page)
+			$("#container").html(page);
+			// alert(window.location.href)
+			if(window.location.href.startsWith('http')){
+				
+			}else{
+				downloadJSAtOnload()
+			}
+		}catch(e){
+			alert(e.stack)
+		}
+			
+			// downloadJSAtOnload();
+			// alert('加载完成')
+		}
+		
+
+		
+
+
+	}
+})
+function sendMessage(msg){
+	window.postMessage(msg,'*')
+}
+function isInited(){
+	return hasPage && hasJcInfo && hasSign && hasSignVerify && hasSignModify && hasComplish && hasComplishVerify && hasComplishModify && hasImage && hasInputs
+}
+
+ </script>
+ </head>
+ <body>
+ 	<div id="container"></div>
+ 
+ </body>
+<!-- 延迟加载脚本 -->
+ <script type="text/javascript">
+  function downloadJSAtOnload() {
+    var element = document.createElement("script");
+    element.src = "lmjc.js";
+    document.body.appendChild(element);
+  }
+
+</script>
+</html>
